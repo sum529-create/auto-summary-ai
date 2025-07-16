@@ -9,6 +9,10 @@ export default {
         sumi: {
           dark: "#0D0B1E",
           night: "#1C1A3C",
+          cosmos: "#2F2C49",
+          saturn: "#3B3335",
+          deepspace:"#292741",
+          eclipse: "#25223A",
           nebula: "#6C63FF",
           starlight: "#B3B8FF",
           moon: "#F5F6FA",
