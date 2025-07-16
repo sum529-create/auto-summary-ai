@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import FlexRow from './ui/FlexRow'
+import FlexRow from '../ui/FlexRow'
 
 const NoteListItem = ({data}) => {
   return (

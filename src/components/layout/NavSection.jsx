@@ -1,4 +1,4 @@
-import NoteList from "../NavNoteList";
+import NoteList from "../nav/NavNoteList";
 
 const NavSection = () => {
   return (

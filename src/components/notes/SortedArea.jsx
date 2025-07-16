@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import SortButton from "../ui/SortedButton";
+import SortButton from "./SortedButton";
 
 const SortedArea = () => {
   const [sorted, setSorted] = useState('recently');

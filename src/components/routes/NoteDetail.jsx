@@ -1,7 +1,7 @@
 import React from "react";
-import NoteArea from "../ui/NoteArea";
+import NoteArea from "../notes/NoteArea";
 import FlexRow from "../ui/FlexRow";
-import NoteTextArea from "../NoteTextArea";
+import NoteTextArea from "../notes/NoteTextArea";
 
 const NoteDetail = () => {
   return (
