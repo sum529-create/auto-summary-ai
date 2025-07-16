@@ -1,10 +1,10 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import FlexRow from './ui/FlexRow'
+import FlexRow from '../ui/FlexRow'
 
 const NoteListItem = ({data}) => {
   return (
-    <li className='cursor-pointer bg-sumi-starlight p-4 rounded'>
+    <li className='cursor-pointer bg-sumi-moon p-4 rounded'>
       <Link to={`/notes/${data.id}`}>
         <FlexRow>
           <div>
