@@ -36,7 +36,7 @@ const Button = ({ onClick, type = 'button', children, variant='default', size='d
     <button
       type={type}
       onClick={onClick}
-      className={cn(buttonVariants({variant, size, className}), fullWidth && 'w-full')}
+      className={cn(buttonVariants({variant, size}),className, fullWidth && 'w-full')}
     >
       {children}
     </button>
