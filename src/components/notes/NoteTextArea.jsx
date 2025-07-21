@@ -11,7 +11,7 @@ const NoteTextArea = ({title, content, isReadOnly, onChange, children}) => {
         onChange={e => onChange(e.target.value)}
         aria-label={title} readOnly={isReadOnly}
         value={content}
-        placeholder={!isReadOnly && '메모를 적어주세요.'}
+        placeholder={!isReadOnly ? '메모를 적어주세요.' : undefined}
       />
       {children}
     </div>
