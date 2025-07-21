@@ -4,11 +4,13 @@ import App from "./App.jsx";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import NoteDetail from "./components/routes/NoteDetail.jsx";
 import Notes from "./components/routes/Notes.jsx";
+import ErrorPage from "./components/routes/ErrorPage.jsx";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App/>,
+    errorElement: <ErrorPage/>,
     children: [
       {
         path: "/",
@@ -16,7 +18,8 @@ const router = createBrowserRouter([
       },
       {
         path: "/notes/:id",
-        element: <NoteDetail/>
+        element: <NoteDetail/>,
+        errorElement: <ErrorPage/>
       }
     ]
   },

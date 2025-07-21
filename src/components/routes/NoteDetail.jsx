@@ -1,26 +1,127 @@
-import React from "react";
-import NoteArea from "../ui/NoteArea";
+import NoteArea from "../notes/NoteArea";
 import FlexRow from "../ui/FlexRow";
-import NoteTextArea from "../NoteTextArea";
+import NoteTextArea from "../notes/NoteTextArea";
+import Button from "../ui/Button";
+import {  useDispatch, useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
+import { selectNoteById } from "../../store/noteSelector";
+import { useCallback, useEffect, useState } from "react";
+import { addNote, deleteNote, updateNote } from "../../store/notesSlice";
+import { format } from "date-fns";
+import {isUUID} from "../../lib/textFormat"
 
 const NoteDetail = () => {
+  const {id} = useParams();
+  const note = useSelector(selectNoteById(id));
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [title, setTitle] = useState(note?.title || '');
+  const [content, setContent] = useState(note?.content || '')
+  const [summary, setSummary] = useState(note?.summary || '')
+
+  const initNote = useCallback(() => {
+    setContent('')
+    setTitle('')
+    setSummary('')
+  }, [])
+
+  useEffect(() => {
+    if(id && !isUUID(id)){
+      alert('잘못된 접근입니다.')
+      navigate('/')
+    }
+  }, [id, navigate])
+  useEffect(() => {
+    if(note) {
+      setContent(note.content || '')
+      setTitle(note.title || '')
+      setSummary(note.summary || '')
+    } else {
+      initNote();
+    }
+  },[note, initNote])
+
+  const onHandleAddNote = () => {
+    if(!title.trim()) return alert('제목을 입력해주세요.')
+    if(!content.trim()) {
+      return alert('메모를 입력해주세요')
+    }
+    const now = new Date();
+    const newNote = {
+      id,
+      title: title.trim(),
+      content: content.trim(),
+      date: format(now, 'yyyy.MM.dd HH:mm'),
+      summary
+    }
+    dispatch(addNote(newNote))
+    navigate('/');
+  }
+
+  const onHandleDeleteNote = () => {
+    if(window.confirm('해당 노트를 정말 삭제하시겠습니까?')){
+      dispatch(deleteNote({id}))
+      navigate('/')
+    }
+  }
+
+  const onHandleUpdateNote = () => {
+    const modifyNote = {
+      id,
+      title,
+      content,
+      summary
+    }
+    dispatch(updateNote(modifyNote));
+    navigate('/');
+  }
+  
   return (
     <NoteArea>
-      <FlexRow>
-        <div>
-          <span className="text-gray-700 text-sm">2025년 07년 15일</span>
-          <h3 className="text-gray-900 text-2xl font-bold">안녕하시요</h3>
-        </div>
-        <button className="bg-danger text-white rounded py-1 px-3">삭제</button>
-      </FlexRow>
-      <div className="flex gap-2 my-4">
-        <NoteTextArea title="메모" isReadOnly={false}>
-          <div className="my-4">
-            <button className="bg-primary text-white rounded py-1 px-3">요약</button>
+      {
+        note ? 
+        <>
+          <FlexRow>
+            <div className="flex flex-col space-y-2">
+              <span className="text-gray-400 text-sm">{note.date}</span>
+              <input type="text" id="title" value={title} placeholder="제목을 입력해주세요." className="bg-gray-200 rounded border py-1 px-2 border-sumi-nebula" onChange={e => setTitle(e.target.value)} />
+            </div>
+            <div className="space-x-2">
+              <Button onClick={onHandleDeleteNote} variant="danger">삭제</Button>
+              <Button onClick={onHandleUpdateNote} variant="success">수정</Button>
+            </div>
+          </FlexRow>
+          <div className="flex gap-2 my-4">
+            <NoteTextArea title="메모" content={content} onChange={setContent} isReadOnly={false}>
+              <div className="my-4">
+                <Button>요약</Button>
+              </div>
+            </NoteTextArea>
+            <NoteTextArea title="요약 결과" content={summary} isReadOnly={true}/>
           </div>
-        </NoteTextArea>
-        <NoteTextArea title="요약 결과" isReadOnly={true}/>
-      </div>
+        </>
+        :
+        <>
+          <FlexRow>
+            <div className="flex flex-col space-y-2">
+              <label htmlFor="title" className="text-white">제목</label>
+              <input type="text" id="title" value={title} placeholder="제목을 입력해주세요." className="bg-gray-200 rounded border py-1 px-2 border-sumi-nebula" onChange={e => setTitle(e.target.value)} />
+            </div>
+          </FlexRow>
+          <div className="flex gap-2 my-4">
+            <NoteTextArea onChange={setContent} content={content} title="메모" isReadOnly={false}>
+              <div className="my-4">
+                <Button>요약</Button>
+              </div>
+            </NoteTextArea>
+            <NoteTextArea title="요약 결과" isReadOnly={true}/>
+          </div>
+          <div className="flex justify-end">
+            <Button onClick={onHandleAddNote} variant="success">추가</Button>
+          </div>
+        </>
+      }
+      
     </NoteArea>
   );
 };
