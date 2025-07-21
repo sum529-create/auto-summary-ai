@@ -5,7 +5,8 @@ import Button from "../ui/Button";
 const NavSection = () => {
   const navigate = useNavigate();
   const handleClick = () => {
-    const id =1;
+    const id = crypto.randomUUID();
+    
     navigate(`/notes/${id}`)
   }
   return (

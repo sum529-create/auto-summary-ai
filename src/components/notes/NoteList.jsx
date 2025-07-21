@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux'
 const NoteList = () => {
   const notes = useSelector(state => state.notes);
   return (
-    <ul className='my-4'>
+    <ul className='my-4 space-y-5'>
       {
         notes.map(e => (
           <NoteListItem key={e.id} data={e}/>

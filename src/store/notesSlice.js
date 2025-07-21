@@ -5,7 +5,8 @@ export const initialState = [
     id: 1,
     title: '안녕하세요',
     content: '안녕하세요 콘텐츠입니다.',
-    date: '2025.07.15 18:26'
+    date: '2025.07.15 18:26',
+    summary: '소개글',
   }
 ]
 
@@ -14,22 +15,18 @@ const noteSlice = createSlice({
   initialState,
   reducers: {
     addNote: (state, action) => {
-      state.notes = state.notes.push(action.payload)
+      state.push(action.payload)
     },
     deleteNote: (state, action) => {
-      state.notes = state.notes.filter(e => e.id !== action.payload.id)
+      return state.filter(e => e.id !== action.payload.id)
     },
     updateNote: (state, action) => {
-      state.notes.map(e => {
-        if(e.id === action.payload.id){
-          return {
-            title: action.payload.title,
-            content: action.payload.content,
-            summary: action.payload.summary
-          }
-        }
-        return e;
-      })
+      const note = state.find(e => e.id === action.payload.id);
+      if(note){
+        note.title = action.payload.title;
+        note.content = action.payload.content;
+        note.summary = action.payload.summary;
+      }
     }
   }
 })
