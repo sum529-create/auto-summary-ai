@@ -5,9 +5,10 @@ import Button from "../ui/Button";
 import {  useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { selectNoteById } from "../../store/noteSelector";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { addNote, deleteNote, updateNote } from "../../store/notesSlice";
 import { format } from "date-fns";
+import {isUUID} from "../../lib/textFormat"
 
 const NoteDetail = () => {
   const {id} = useParams();
@@ -18,6 +19,18 @@ const NoteDetail = () => {
   const [content, setContent] = useState(note?.content || '')
   const [summary, setSummary] = useState(note?.summary || '')
 
+  const initNote = useCallback(() => {
+    setContent('')
+    setTitle('')
+    setSummary('')
+  }, [])
+
+  useEffect(() => {
+    if(id && !isUUID(id)){
+      alert('잘못된 접근입니다.')
+      navigate('/')
+    }
+  }, [id, navigate])
   useEffect(() => {
     if(note) {
       setContent(note.content || '')
@@ -26,13 +39,7 @@ const NoteDetail = () => {
     } else {
       initNote();
     }
-  },[note])
-
-  const initNote = () => {
-    setContent('')
-    setTitle('')
-    setSummary('')
-  }
+  },[note, initNote])
 
   const onHandleAddNote = () => {
     if(!title.trim()) return alert('제목을 입력해주세요.')
@@ -78,9 +85,9 @@ const NoteDetail = () => {
         note ? 
         <>
           <FlexRow>
-            <div>
+            <div className="flex flex-col space-y-2">
               <span className="text-gray-400 text-sm">{note.date}</span>
-              <h3 className="text-gray-200 text-2xl font-bold">{note.title}</h3>
+              <input type="text" id="title" value={title} placeholder="제목을 입력해주세요." className="bg-gray-200 rounded border py-1 px-2 border-sumi-nebula" onChange={e => setTitle(e.target.value)} />
             </div>
             <div className="space-x-2">
               <Button onClick={onHandleDeleteNote} variant="danger">삭제</Button>

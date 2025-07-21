@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 export const initialState = [
   {
-    id: 1,
+    id: '12bd2d01-f314-4bd2-adea-d36b4eb72591',
     title: '안녕하세요',
     content: '안녕하세요 콘텐츠입니다.',
     date: '2025.07.15 18:26',
