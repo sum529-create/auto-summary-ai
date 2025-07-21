@@ -44,7 +44,7 @@ const NoteDetail = () => {
       id,
       title: title.trim(),
       content: content.trim(),
-      date: format(now, 'yyyy.MM.dd HH:MM'),
+      date: format(now, 'yyyy.MM.dd HH:mm'),
       summary
     }
     dispatch(addNote(newNote))
