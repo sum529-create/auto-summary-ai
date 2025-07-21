@@ -53,7 +53,7 @@ const NoteDetail = () => {
   }
 
   const onHandleDeleteNote = () => {
-    if(confirm('해당 노트를 정말 삭제하시겠습니까?')){
+    if(window.confirm('해당 노트를 정말 삭제하시겠습니까?')){
       dispatch(deleteNote({id}))
       navigate('/')
       initNote();
