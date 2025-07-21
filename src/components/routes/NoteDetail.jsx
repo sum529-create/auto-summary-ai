@@ -56,14 +56,12 @@ const NoteDetail = () => {
     }
     dispatch(addNote(newNote))
     navigate('/');
-    initNote();
   }
 
   const onHandleDeleteNote = () => {
     if(window.confirm('해당 노트를 정말 삭제하시겠습니까?')){
       dispatch(deleteNote({id}))
       navigate('/')
-      initNote();
     }
   }
 
@@ -76,7 +74,6 @@ const NoteDetail = () => {
     }
     dispatch(updateNote(modifyNote));
     navigate('/');
-    initNote();
   }
   
   return (
