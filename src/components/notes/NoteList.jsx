@@ -1,19 +1,13 @@
 import React from 'react'
 import NoteListItem from './NoteListItem'
+import { useSelector } from 'react-redux'
 
 const NoteList = () => {
-  const mockData = [
-    {
-      id: 1,
-      title: '안녕하세요',
-      content: '안녕하세요 콘텐츠입니다.',
-      date: '2025.07.15 18:26'
-    }
-  ]
+  const notes = useSelector(state => state.notes);
   return (
-    <ul className='my-4'>
+    <ul className='my-4 space-y-5'>
       {
-        mockData.map(e => (
+        notes.map(e => (
           <NoteListItem key={e.id} data={e}/>
         ))
       }
