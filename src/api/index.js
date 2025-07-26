@@ -1,13 +1,13 @@
 import axios from "axios";
 
 export async function fetchOpenAI(content) {
-  const res = await axios.post("https://api.openai.com/v1/chat/completions", 
+  const res = await axios.post("https://openrouter.ai/api/v1/chat/completions", 
     {
-      model: "gpt-3.5-turbo",
-      message: [
+      model: "anthropic/claude-3-haiku",
+      messages: [
         {
           role: "user",
-          content: `다음 내용을 요약해줘 ${content}`
+          content: `다음 글을 요약하는데, 그 문장만 출력해. '요약:' 같은 표현도 쓰지 마. 내용: ${content}`
         }
       ]
     },

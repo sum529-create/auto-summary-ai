@@ -9,6 +9,7 @@ import { useCallback, useEffect, useState } from "react";
 import { addNote, deleteNote, updateNote } from "../../store/notesSlice";
 import { format } from "date-fns";
 import {isUUID} from "../../lib/textFormat"
+import { fetchOpenAI } from "../../api";
 
 const NoteDetail = () => {
   const {id} = useParams();
@@ -18,6 +19,7 @@ const NoteDetail = () => {
   const [title, setTitle] = useState(note?.title || '');
   const [content, setContent] = useState(note?.content || '')
   const [summary, setSummary] = useState(note?.summary || '')
+  const [isLoading, setIsLoading] = useState(false);
 
   const initNote = useCallback(() => {
     setContent('')
@@ -41,7 +43,7 @@ const NoteDetail = () => {
     }
   },[note, initNote])
 
-  const onHandleAddNote = () => {
+  const handleAddNote = () => {
     if(!title.trim()) return alert('제목을 입력해주세요.')
     if(!content.trim()) {
       return alert('메모를 입력해주세요')
@@ -58,14 +60,14 @@ const NoteDetail = () => {
     navigate('/');
   }
 
-  const onHandleDeleteNote = () => {
+  const handleDeleteNote = () => {
     if(window.confirm('해당 노트를 정말 삭제하시겠습니까?')){
       dispatch(deleteNote({id}))
       navigate('/')
     }
   }
 
-  const onHandleUpdateNote = () => {
+  const handleUpdateNote = () => {
     const modifyNote = {
       id,
       title,
@@ -74,6 +76,22 @@ const NoteDetail = () => {
     }
     dispatch(updateNote(modifyNote));
     navigate('/');
+  }
+
+  const handleSubmit = async() => {
+    if(isLoading) return;
+    setIsLoading(true);
+    if(content.length < 30){
+      return alert('요약하려면 최소 30자 이상 입력해주세요.');
+    }
+    try {
+      const res = await fetchOpenAI(content);
+      setSummary(res.choices[0].message.content)
+    } catch (error) {
+      console.error('Failed to Fetch Data:', error)
+    } finally {
+      setIsLoading(false);
+    }
   }
   
   return (
@@ -87,14 +105,14 @@ const NoteDetail = () => {
               <input type="text" id="title" value={title} placeholder="제목을 입력해주세요." className="bg-gray-200 rounded border py-1 px-2 border-sumi-nebula" onChange={e => setTitle(e.target.value)} />
             </div>
             <div className="space-x-2">
-              <Button onClick={onHandleDeleteNote} variant="danger">삭제</Button>
-              <Button onClick={onHandleUpdateNote} variant="success">수정</Button>
+              <Button onClick={handleDeleteNote} variant="danger">삭제</Button>
+              <Button onClick={handleUpdateNote} variant="success">수정</Button>
             </div>
           </FlexRow>
           <div className="flex gap-2 my-4">
             <NoteTextArea title="메모" content={content} onChange={setContent} isReadOnly={false}>
               <div className="my-4">
-                <Button>요약</Button>
+                <Button onClick={handleSubmit}>{isLoading ? "요약 중..." : "요약"}</Button>
               </div>
             </NoteTextArea>
             <NoteTextArea title="요약 결과" content={summary} isReadOnly={true}/>
@@ -111,13 +129,13 @@ const NoteDetail = () => {
           <div className="flex gap-2 my-4">
             <NoteTextArea onChange={setContent} content={content} title="메모" isReadOnly={false}>
               <div className="my-4">
-                <Button>요약</Button>
+                <Button onClick={handleSubmit}>{isLoading ? "요약 중..." : "요약"}</Button>
               </div>
             </NoteTextArea>
-            <NoteTextArea title="요약 결과" isReadOnly={true}/>
+            <NoteTextArea title="요약 결과" content={summary} isReadOnly={true}/>
           </div>
           <div className="flex justify-end">
-            <Button onClick={onHandleAddNote} variant="success">추가</Button>
+            <Button onClick={handleAddNote} variant="success">추가</Button>
           </div>
         </>
       }
