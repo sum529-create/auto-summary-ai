@@ -1,12 +1,22 @@
 import NoteList from "../notes/NoteList";
 import NoteArea from "../notes/NoteArea";
 import SortedArea from "../notes/SortedArea";
+import { useSelector } from "react-redux";
+import Empty from "../ui/empty";
 
 const Notes = () => {
+  const notes = useSelector(state => state.notes);
   return (
     <NoteArea>
-      <SortedArea/>
-      <NoteList/>
+      {
+        notes && notes.length > 0 ? 
+        <>
+          <SortedArea/>
+          <NoteList/>
+        </>
+        :
+        <Empty/>
+      }
     </NoteArea>
   );
 };
