@@ -5,7 +5,7 @@ import Button from "../ui/Button";
 import {  useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { selectNoteById } from "../../store/noteSelector";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { addNote, deleteNote, updateNote } from "../../store/notesSlice";
 import { format } from "date-fns";
 import {isUUID} from "../../lib/textFormat"
@@ -20,6 +20,7 @@ const NoteDetail = () => {
   const [content, setContent] = useState(note?.content || '')
   const [summary, setSummary] = useState(note?.summary || '')
   const [isLoading, setIsLoading] = useState(false);
+  const prevContentRef = useRef(content);
 
   const initNote = useCallback(() => {
     setContent('')
@@ -42,12 +43,17 @@ const NoteDetail = () => {
       initNote();
     }
   },[note, initNote])
+  useEffect(() => {
+    if(content !== prevContentRef.current){
+      setSummary("");
+      prevContentRef.current = content;
+    }
+  },[content])
 
   const handleAddNote = () => {
     if(!title.trim()) return alert('제목을 입력해주세요.')
-    if(!content.trim()) {
-      return alert('메모를 입력해주세요')
-    }
+    if(!content.trim()) return alert('메모를 입력해주세요.')
+    if(!summary.trim()) return alert('요약 버튼을 클릭하여 요약 결과를 정리해주세요.')
     const now = new Date();
     const newNote = {
       id,
@@ -104,10 +110,6 @@ const NoteDetail = () => {
               <span className="text-gray-400 text-sm">{note.date}</span>
               <input type="text" id="title" value={title} placeholder="제목을 입력해주세요." className="bg-gray-200 rounded border py-1 px-2 border-sumi-nebula" onChange={e => setTitle(e.target.value)} />
             </div>
-            <div className="space-x-2">
-              <Button onClick={handleDeleteNote} variant="danger">삭제</Button>
-              <Button onClick={handleUpdateNote} variant="success">수정</Button>
-            </div>
           </FlexRow>
           <div className="flex gap-2 my-4">
             <NoteTextArea title="메모" content={content} onChange={setContent} isReadOnly={false}>
@@ -116,6 +118,10 @@ const NoteDetail = () => {
               </div>
             </NoteTextArea>
             <NoteTextArea title="요약 결과" content={summary} isReadOnly={true}/>
+          </div>
+          <div className="flex justify-end space-x-2">
+            <Button onClick={handleDeleteNote} variant="danger">삭제</Button>
+            <Button onClick={handleUpdateNote} variant="success">수정</Button>
           </div>
         </>
         :
