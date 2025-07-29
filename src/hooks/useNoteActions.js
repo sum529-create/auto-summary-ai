@@ -4,13 +4,15 @@ import { fetchOpenAI } from "../api";
 import { NOTE_DETAIL } from "../store/noteDetailReducer";
 import { confirmData } from "../lib/validation";
 import { format } from "date-fns";
+import { v4 as uuidv4 } from 'uuid'
 
 /**
  * 메모 작성 버튼 클릭 시 페이지 이동
  * @param {*} navigate 
  */
+
 export const handleClick = (navigate) => {
-  const id = crypto.randomUUID();
+  const id = crypto.randomUUID?.() ?? uuidv4()
   navigate(`/notes/${id}`)
 }
 
