@@ -30,7 +30,7 @@ export const handleNoteActions = ({navigate, dispatch, id}) => {
       title: title.trim(),
       content: content.trim(),
       date: format(now, 'yyyy.MM.dd HH:mm'),
-      summary
+      summary: summary.trim()
     }
     dispatch(addNote(newNote))
     navigate('/');
@@ -39,9 +39,9 @@ export const handleNoteActions = ({navigate, dispatch, id}) => {
     if(!confirmData(title, content, summary)) return;
       const modifyNote = {
       id,
-      title,
-      content,
-      summary
+      title: title.trim(),
+      content: content.trim(),
+      summary: summary.trim()
     }
     dispatch(updateNote(modifyNote));
     navigate('/');
@@ -55,7 +55,13 @@ export const handleNoteActions = ({navigate, dispatch, id}) => {
   return {handleAddNote, handleUpdateNote, handleDeleteNote}
 }
 
-// 메모 요약하기 api 통신
+/**
+ * 메모 요약하기 api 통신
+ * @param {Boolean} isLoading 
+ * @param {*} stateDispatch 
+ * @param {string} content 
+ * @returns 
+ */
 export const handleSubmitSummary = async(isLoading, stateDispatch, content) => {
   const {SET_LOADING, SET_SUMMARY} = NOTE_DETAIL
   if(isLoading) return;
@@ -65,6 +71,9 @@ export const handleSubmitSummary = async(isLoading, stateDispatch, content) => {
   stateDispatch({type: SET_LOADING, payload:true});
   try {
     const res = await fetchOpenAI(content);
+    if (!res?.choices?.[0]?.message?.content) {
+      throw new Error('Invalid API response structure');
+    }
     stateDispatch({type: SET_SUMMARY, payload:res.choices[0].message.content})
   } catch (error) {
     console.error('Failed to Fetch Data:', error)
