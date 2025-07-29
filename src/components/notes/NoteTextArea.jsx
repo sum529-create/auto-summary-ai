@@ -8,7 +8,7 @@ const NoteTextArea = ({title, content, isReadOnly, onChange, children}) => {
         className={cn(`w-full p-4 min-h-60 resize-none outline-none focus:(ring-2 ring-blue-500) 
           ${isReadOnly ? 'bg-gray-700 text-white' : 'bg-gray-200 text-black'}`)}
         name="note-content" 
-        id={cn(`note-content${isReadOnly ? '-result' : ''}`)}
+        id={`note-content${isReadOnly ? '-result' : ''}`}
         onChange={e => !isReadOnly && onChange?.(e.target.value)}
         aria-label={title} 
         readOnly={isReadOnly}
