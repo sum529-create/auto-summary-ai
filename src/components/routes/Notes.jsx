@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import Empty from "../ui/Empty";
 
 const Notes = () => {
-  const notes = useSelector(state => state.notes);
+  const notes = useSelector(state => state.notes.lists);
   return (
     <NoteArea>
       {
