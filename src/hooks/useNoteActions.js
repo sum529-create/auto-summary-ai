@@ -59,15 +59,16 @@ export const handleNoteActions = ({navigate, dispatch, id}) => {
 export const handleSubmitSummary = async(isLoading, stateDispatch, content) => {
   const {SET_LOADING, SET_SUMMARY} = NOTE_DETAIL
   if(isLoading) return;
-  stateDispatch({type: SET_LOADING, payload:true});
   if(content.length < 30){
     return alert('요약하려면 최소 30자 이상 입력해주세요.');
   }
+  stateDispatch({type: SET_LOADING, payload:true});
   try {
     const res = await fetchOpenAI(content);
     stateDispatch({type: SET_SUMMARY, payload:res.choices[0].message.content})
   } catch (error) {
     console.error('Failed to Fetch Data:', error)
+    alert('요약 생성에 실패했습니다. 다시 시도해주세요.')
   } finally {
     stateDispatch({type: SET_LOADING, payload:false})
   }
