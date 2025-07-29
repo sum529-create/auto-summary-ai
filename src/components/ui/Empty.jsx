@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import { handleClick } from '../../hooks/useNoteAction'
+import { handleClick } from '../../hooks/useNoteActions'
 import Button from './Button'
 
 const Empty = () => {

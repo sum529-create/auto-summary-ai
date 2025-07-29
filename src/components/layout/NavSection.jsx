@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import NoteList from "../nav/NavNoteList";
 import Button from "../ui/Button";
-import { handleClick } from "../../hooks/useNoteAction";
+import { handleClick } from "../../hooks/useNoteActions";
 
 const NavSection = () => {
   const navigate = useNavigate();
