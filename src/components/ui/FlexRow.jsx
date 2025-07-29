@@ -2,7 +2,9 @@ import React from 'react'
 
 const FlexRow = ({children, className=""}) => {
   return (
-    <div className={`flex gap-2 items-center text-left justify-between ${className}`}>{children}</div>
+    <div className={`flex gap-x-2 gap-y-3 items-center justify-between ${className}`}>
+      {children}
+    </div>
   )
 }
 

@@ -1,5 +1,4 @@
 import { cva } from 'class-variance-authority';
-import React from 'react';
 import { cn } from '../../lib/utils';
 
 const buttonVariants = cva(
@@ -31,7 +30,7 @@ const buttonVariants = cva(
   }
 )
 
-const Button = ({ onClick, type = 'button', children, variant='default', size='default' ,className = '', fullWidth=false }) => {
+const Button = ({ onClick, type = 'button', children, variant='default', size='default' ,className = '', fullWidth=false}) => {
   return (
     <button
       type={type}
