@@ -4,7 +4,7 @@ import NavNoteListItem from "./NavNoteListItem";
 import { useSelector } from "react-redux";
 
 const NavNoteList = () => {
-  const notes = useSelector(state => state.notes)
+  const notes = useSelector(state => state.notes.lists)
   return (
     <ul className="flex gap-1 flex-col">
       <li className="text-sumi-nebula">

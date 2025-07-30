@@ -1,9 +1,8 @@
-import React from 'react'
 import NoteListItem from './NoteListItem'
 import { useSelector } from 'react-redux'
 
 const NoteList = () => {
-  const notes = useSelector(state => state.notes);
+  const notes = useSelector(state => state.notes.lists);
   return (
     <ul className='my-4 space-y-5'>
       {
