@@ -49,16 +49,12 @@ const noteSlice = createSlice({
       state.sortedType = action.payload
 
       if(state.sortedType === 'recently'){
-        state.lists = [...state.lists].sort((a,b) => {
-          if(a.date > b.date) return -1;
-          else if(a.date < b.date) return 1;
-          else return 0;
+        state.lists.sort((a,b) => {
+          return new Date(b.date.replace(/\./g, '-')) - new Date(a.date.replace(/\./g, '-'));
         })
       } else {
-        state.lists = [...state.lists].sort((a,b) => {
-          if(a.title > b.title) return 1;
-          else if(a.title < b.title) return -1;
-          else return 0;
+        state.lists.sort((a,b) => {
+          return a.title.localeCompare(b.title);
         })
       }
     }
