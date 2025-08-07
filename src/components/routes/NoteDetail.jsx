@@ -20,6 +20,7 @@ const NoteDetail = () => {
   const prevContentRef = useRef(content);
   const {handleAddNote, handleUpdateNote, handleDeleteNote} = handleNoteActions({navigate, dispatch, id})
   const {SET_STATE, SET_INIT, SET_SUMMARY} = NOTE_DETAIL
+  const hasMounted = useRef(false);
 
   useEffect(() => {
     if(id && !isUUID(id)){
@@ -35,11 +36,16 @@ const NoteDetail = () => {
         content: note.content || '', 
         summary: note.summary || ''
       })
+      prevContentRef.current = note.content
     } else {
       stateDispatch({type:SET_INIT})
     }
   },[note, SET_STATE, SET_INIT])
   useEffect(() => {
+    if(!hasMounted.current){
+      hasMounted.current = true;
+      return;
+    }
     if(content !== prevContentRef.current){
       stateDispatch({type:SET_SUMMARY, payload: ""})
       prevContentRef.current = content;
