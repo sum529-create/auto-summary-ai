@@ -4,7 +4,7 @@ import NoteTextArea from "../notes/NoteTextArea";
 import Button from "../ui/Button";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { selectNoteById } from "../../store/noteSelector";
+import { selectNoteById } from "../../lib/noteSelector";
 import { useEffect, useReducer, useRef } from "react";
 import {isUUID} from "../../lib/textFormat"
 import { detailReducer, initialDetailState, NOTE_DETAIL } from "../../store/noteDetailReducer";
