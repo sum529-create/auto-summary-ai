@@ -8,7 +8,7 @@ const NoteListItem = ({data}) => {
       <Link to={`/notes/${data.id}`}>
         <FlexRow>
           <div className="flex-1 min-w-0">
-            <h3 className='text-gray-900 text-lg'>{data.title}</h3>
+            <h3 className='text-gray-900 text-lg' data-testid="note-title">{data.title}</h3>
             <p className='text-gray-700 text-base max-w-full min-w-0 flex-grow overflow-hidden text-ellipsis whitespace-nowrap'>
               {data.content.slice(0, 50)}
             </p>
