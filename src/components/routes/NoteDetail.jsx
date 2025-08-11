@@ -61,7 +61,7 @@ const NoteDetail = () => {
             ? <span className="text-gray-400 text-sm">{note.date}</span>
             : <label htmlFor="title" className="text-white">제목</label>
           }
-          <input type="text" id="title" value={title} placeholder="제목을 입력해주세요." className="bg-gray-200 rounded border py-1 px-2 border-sumi-nebula" onChange={e => stateDispatch({type:'SET_TITLE', payload:e.target.value})} />
+          <input type="text" id="title" value={title} data-testid="title" placeholder="제목을 입력해주세요." className="bg-gray-200 rounded border py-1 px-2 border-sumi-nebula" onChange={e => stateDispatch({type:'SET_TITLE', payload:e.target.value})} />
         </div>
       </FlexRow>
       <div className="flex gap-2 my-4">

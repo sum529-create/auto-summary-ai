@@ -11,6 +11,7 @@ const NoteTextArea = ({title, content, isReadOnly, onChange, children}) => {
         id={`note-content${isReadOnly ? '-result' : ''}`}
         onChange={e => !isReadOnly && onChange?.(e.target.value)}
         aria-label={title} 
+        data-testid="content"
         readOnly={isReadOnly}
         value={content}
         placeholder={!isReadOnly ? '메모를 적어주세요.' : undefined}
