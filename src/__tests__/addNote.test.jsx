@@ -1,5 +1,5 @@
 import { createMemoryRouter, RouterProvider } from "react-router-dom";
-import { describe, expect, it, vi, beforeEach } from "vitest";
+import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
 import { render, waitFor, screen } from "@testing-library/react";
 import { configureStore } from "@reduxjs/toolkit";
 import notesReducer from "../store/notesSlice";
@@ -8,7 +8,7 @@ import { Provider } from "react-redux";
 import { routerConfig } from "../routerConfig";
 import { persistReducer, persistStore } from "redux-persist";
 import { PersistGate } from "redux-persist/integration/react";
-import axios from "axios";
+import * as api from "../api";
 
 const mockStorage = {
   getItem: vi.fn(() => Promise.resolve(null)),
@@ -21,12 +21,11 @@ window.alert = vi.fn();
 vi.mock("axios")
 
 describe("노트 추가 및 편집 기능", () => {
+  let testStore, router, persistor;
+
   beforeEach(() => {
     vi.clearAllMocks();
-  })
-  
-  it("새로운 노트 추가, Notes Routing, 사이드바에 링크 추가", async() => {
-    
+
     const persistConfig = {
       key: 'test-notes',
       version: 1,
@@ -35,7 +34,7 @@ describe("노트 추가 및 편집 기능", () => {
 
     const persistedReducer = persistReducer(persistConfig, notesReducer);
 
-    const testStore = configureStore({
+    testStore = configureStore({
       reducer: {
         notes: persistedReducer
       },
@@ -47,9 +46,15 @@ describe("노트 추가 및 편집 기능", () => {
         })
     });
 
-    const router = createMemoryRouter(routerConfig);
-    const persistor = persistStore(testStore);
+    router = createMemoryRouter(routerConfig);
+    persistor = persistStore(testStore);
+  })
 
+  afterEach(()=>{
+    persistor.purge();
+  })
+  
+  it("새로운 노트 추가, Notes Routing, 사이드바에 링크 추가", async() => {
     const {getAllByText, getByTestId, getByText, getAllByTestId} = render(
       <Provider store={testStore}>
         <PersistGate loading={<div data-testid="loading">Loading...</div>} persistor={persistor}>
@@ -61,8 +66,6 @@ describe("노트 추가 및 편집 기능", () => {
     await waitFor(() => {
       expect(screen.queryByTestId("loading")).not.toBeInTheDocument();
     }, { timeout: 3000 });
-
-    screen.debug();
 
     const noteButtons = getAllByText("노트 작성");
     expect(noteButtons).toHaveLength(2);
@@ -90,14 +93,31 @@ describe("노트 추가 및 편집 기능", () => {
     await userEvent.clear(titleEl);
     await userEvent.clear(contentEl[0]);
     await userEvent.type(titleEl, "New Title");
-    await userEvent.type(contentEl[0], "New Content");
+    await userEvent.type(contentEl[0], "이것은 테스트를 위한 충분히 긴 메모 내용입니다. 최소 30자 이상이어야 합니다.");
+
+    if (contentEl[0].value.length < 30) {
+      expect(window.alert).toHaveBeenCalledWith('요약하려면 최소 30자 이상 입력해주세요.');
+    } else {
+      expect(window.alert).not.toHaveBeenCalledWith('요약하려면 최소 30자 이상 입력해주세요.');
+    }
+
+    vi.spyOn(api, "fetchOpenAI").mockResolvedValueOnce({
+      choices: [
+        {
+          message: {
+            content: "요약된 내용"
+          }
+        }
+      ]
+    });
     
     // 요약 버튼 클릭하여 요약 생성 (validation 통과를 위해)
     const summaryButton = getByText('요약');
     await userEvent.click(summaryButton);
     
-    // 요약 생성 완료까지 잠시 대기 (에러가 날 수 있지만 테스트 계속 진행)
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await waitFor(() => {
+      expect(contentEl[1]).toHaveValue('요약된 내용');
+    })
     
     const addButton = getByText('추가');
     await userEvent.click(addButton);
@@ -112,7 +132,7 @@ describe("노트 추가 및 편집 기능", () => {
         const notes = testStore.getState().notes.lists;
         expect(notes).toHaveLength(1);
         expect(notes[0].title).toBe("New Title");
-        expect(notes[0].content).toBe("New Content");
+        expect(notes[0].content).toBe("이것은 테스트를 위한 충분히 긴 메모 내용입니다. 최소 30자 이상이어야 합니다.");
       });
 
       await waitFor(() => {
@@ -120,24 +140,5 @@ describe("노트 추가 및 편집 기능", () => {
       });
     }
 
-    const mockResponse = {
-      data: {
-        choices: [
-          {
-            message:{
-              content: "요약된 내용"
-            }
-          }
-        ]
-      }
-    }
-
-    axios.post.mockResolvedValueOnce(mockResponse)
-
-    await userEvent.click(getByText('요약'))
-    
-
-    // 정리
-    persistor.purge();
   })
 })
